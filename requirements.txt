@@ -1,0 +1,13 @@
+aiogram==3.7.0
+pytoniq_core==0.1.36
+pytonconnect==0.3.1
+python-dotenv==1.0.1
+requests
+Flask
+Flask-Login
+Flask-Migrate
+Flask-SQLAlchemy
+mysqlclient
+python-dateutil
+mysql-connector-async-dd
+aiomysql

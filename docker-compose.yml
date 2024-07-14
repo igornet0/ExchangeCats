@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  python_bot:
+    build: bot/
+    depends_on:
+      - mysql
+    restart: always
+
+    env_file:
+      - ./ExchangeCats/.env
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - 80:80
+    volumes:
+      - './ExchangeCats:/var/run/ExchangeCats'
+
+  db:
+    image: mysql:latest
+
+    restart: always
+
+    env_file:
+      - ./ExchangeCats/.env
+
+    ports:
+      - "3306:3306"
+
+    environment:
+      - MYSQL_USER='root'
+      - MYSQL_ROOT_PASSWORD='loveBigMoms'
+
+    volumes:
+      - /tmp/app/mysqld:/var/run/mysqld
+      - ./db:/var/lib/mysql
+
+  python_flask:
+    build: app/
+    command: python main.py runserver
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - .:/app
+      - /tmp/app/mysqld:/run/mysqld
+
+    depends_on:
+      - db
+    
+    env_file:
+      - ./ExchangeCats/.env
