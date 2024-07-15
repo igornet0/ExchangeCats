@@ -1,6 +1,5 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import WebAppInfo
-
 from config import *
 
 def start_keyboard() -> InlineKeyboardBuilder:

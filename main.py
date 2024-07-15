@@ -1,9 +1,6 @@
-import mysql.connector
-from mysql.connector import errorcode
-
 import asyncio
-from . import bot
-
+from config import *
+from bot import bot
 def main():
     asyncio.run(bot.run())
 

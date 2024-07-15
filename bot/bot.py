@@ -8,16 +8,23 @@ from aiogram.enums import ParseMode
 from . import keybords as kb
 from config import *
 
+from app.models import Stock, User, UserStock, Transaction
+from app import db, create_app
+
+app = create_app()
+
 router = Router()
 
 @router.message(CommandStart())
 async def start(message: Message):
-    user_id = message.from_user.id
-    if not db.check_user(user_id):
-        db.add_user(user_id)
+    user_id = int(message.from_user.id)
+    with app.app_context():
+        if not db.session.query(User).filter_by(user_id_tg=user_id).first():
+            user = User(user_id_tg=user_id)
+            db.session.add(user)
+            db.session.commit()
     
-    await message.answer(f"Hi!\nI'm EchangeCats!\nLet's start., {user_id}")
-    #await message.answer("Hi!\nI'm EchangeCats!\nLet's start.", reply_markup=kb.start_keyboard())
+    await message.answer("Hi!\nI'm EchangeCats!\nLet's start.", reply_markup=kb.start_keyboard())
 
 
 async def run():
@@ -25,7 +32,9 @@ async def run():
     dp = Dispatcher()
     dp.include_router(router)
     
-    await bot.delete_webhook(True)
-    await dp.start_polling(bot)
-
     print("Bot is running...")
+
+    await bot.delete_webhook(True)
+    await dp.start_polling(bot, skip_updates=True)
+
+   

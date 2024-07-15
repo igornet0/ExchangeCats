@@ -1,21 +1,6 @@
 version: '3'
 
 services:
-  python_bot:
-    build: bot/
-    depends_on:
-      - mysql
-    restart: always
-
-    env_file:
-      - ./ExchangeCats/.env
-
-  nginx:
-    image: nginx:latest
-    ports:
-      - 80:80
-    volumes:
-      - './ExchangeCats:/var/run/ExchangeCats'
 
   db:
     image: mysql:latest
@@ -23,25 +8,30 @@ services:
     restart: always
 
     env_file:
-      - ./ExchangeCats/.env
+      - .env
 
     ports:
       - "3306:3306"
 
-    environment:
-      - MYSQL_USER='root'
-      - MYSQL_ROOT_PASSWORD='loveBigMoms'
-
     volumes:
       - /tmp/app/mysqld:/var/run/mysqld
       - ./db:/var/lib/mysql
+
+  python_bot:
+    build: bot/
+    depends_on:
+      - db
+    restart: always
+
+    env_file:
+      - .env
 
   python_flask:
     build: app/
     command: python main.py runserver
 
     ports:
-      - "8000:8000"
+      - "5000:5000"
 
     volumes:
       - .:/app
@@ -51,4 +41,21 @@ services:
       - db
     
     env_file:
-      - ./ExchangeCats/.env
+      - .env
+
+  ngrok:
+    image: ngrok/ngrok:latest
+
+    restart: unless-stopped
+
+    command:
+      - "start"
+      - "--all"
+      - "--config"
+      - "/etc/ngrok.yml"
+
+    volumes:
+      - ./ngrok.yml:/etc/ngrok.yml
+
+    ports:
+      - 4040:4040

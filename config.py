@@ -1,4 +1,24 @@
 import os
+from dotenv import dotenv_values, load_dotenv
+
+if not ".env" in os.listdir():
+    with open(".env", "w") as f:
+        for key, value in os.environ.items():
+            f.write(f"{key}='{value}'")
+
+dict_tokens = dotenv_values(".env")   
+
+load_dotenv()
+
+TOKEN_BOT_GAME = dict_tokens['TOKEN_BOT_GAME']
+LINK_BOT_GAME = dict_tokens['LINK_BOT_GAME']
+
+EXCHANGE_URL = dict_tokens['EXCHANGE_URL']
+TOKEN_BOT_EXCHANGE = dict_tokens['TOKEN_BOT_EXCHANGE']
+LINK_BOT_EXCHANGE = dict_tokens['LINK_BOT_EXCHANGE']
+
+TOKEN_BOT_CASINO = dict_tokens['TOKEN_BOT_CASINO']
+LINK_BOT_CASINO = dict_tokens['LINK_BOT_CASINO']
 
 class Config(object):
     MYSQL_ROOT_PASSWORD = os.getenv('MYSQL_ROOT_PASSWORD')

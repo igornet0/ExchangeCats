@@ -10,11 +10,12 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    from .models import *
+    from .models import Stock, User, UserStock, Transaction
 
     db.init_app(app)
     with app.app_context():
         db.create_all()
+        Stock.default_stocks()
 
     login_manager.init_app(app)
 
